@@ -653,6 +653,8 @@ document.addEventListener("DOMContentLoaded", function () {
       card.classList.remove("active");
     });
     if (projectsSection) projectsSection.style.display = "none";
+    // Keep sidebar visible for easy navigation back to projects
+    document.body.classList.add("sidebar-active");
     if (playgroundSection) {
       playgroundSection.style.display = "";
       if (
@@ -902,11 +904,7 @@ heroNavButtons.forEach(function (button) {
  
     const checkAndToggleSidebar = () => {
       if (playgroundActive) {
-        document.body.classList.remove("sidebar-active");
-        const fixedThemeToggle = document.getElementById("fixed-theme-toggle");
-        if (fixedThemeToggle) {
-          fixedThemeToggle.style.display = "block";
-        }
+        // Keep sidebar visible in playground mode so users can navigate back
         return;
       }
 
@@ -914,7 +912,7 @@ heroNavButtons.forEach(function (button) {
         return;
       }
       const rect = projectsSection.getBoundingClientRect();
-      const heroSection = document.querySelector('.hero-section');
+      const heroSection = document.querySelector(".hero-section");
       const heroBottom = heroSection ? heroSection.getBoundingClientRect().bottom : 0;
       // FIX ISSUE #1704: Hide the fixed sidebar when the footer enters the viewport
       const footer = document.querySelector(".footer");
@@ -925,19 +923,9 @@ heroNavButtons.forEach(function (button) {
         rect.top < window.innerHeight &&
         !isFooterVisible &&
         window.scrollY > heroBottom - 100;
- 
-      document.body.classList.toggle("sidebar-active", showSidebar);
-      console.log('Sidebar active:', showSidebar, 'scrollY:', window.scrollY, 'playgroundActive:', playgroundActive);
 
-      const fixedThemeToggle = document.getElementById("fixed-theme-toggle");
-      if (fixedThemeToggle) {
-        if (showSidebar) {
-          fixedThemeToggle.style.display = "none";
-        }
-        else {
-          fixedThemeToggle.style.display = "block";
-        }
-      }
+      document.body.classList.toggle("sidebar-active", showSidebar);
+      console.log("Sidebar active:", showSidebar, "scrollY:", window.scrollY, "playgroundActive:", playgroundActive);
     };
  
     window.addEventListener('scroll', checkAndToggleSidebar);
