@@ -114,14 +114,42 @@ export function openProjectSafe(name, trigger) {
   setMainInert(true);
 
   safeRun(function () {
+    var htmlContent = null;
+
+    // Primary: try getProjectHTML
     if (typeof window.getProjectHTML === "function") {
-      modalBody.innerHTML =
-        window.getProjectHTML(name) ||
-        '<div style="padding:1rem;color:var(--text-secondary)">Project content unavailable.</div>';
-    } else {
-      modalBody.innerHTML =
+      htmlContent = window.getProjectHTML(name);
+    }
+
+    // Fallback: try PascalCase direct function (mirrors main.js strategy)
+    if (!htmlContent || htmlContent.trim().length < 50) {
+      var pascalName = name
+        .split("-")
+        .map(function (w) {
+          return w.charAt(0).toUpperCase() + w.slice(1);
+        })
+        .join("");
+      var fnName = "get" + pascalName + "HTML";
+      if (typeof window[fnName] === "function") {
+        try {
+          htmlContent = window[fnName]();
+        } catch (e) {
+          // fall through to unavailable
+        }
+      }
+    }
+
+    // Last resort: show unavailable message
+    if (
+      !htmlContent ||
+      typeof htmlContent !== "string" ||
+      htmlContent.trim().length < 50
+    ) {
+      htmlContent =
         '<div style="padding:1rem;color:var(--text-secondary)">Project content unavailable.</div>';
     }
+
+    modalBody.innerHTML = htmlContent;
     if (typeof window.initializeProject === "function")
       window.initializeProject(name);
     setupModalInfoButton(name);
