@@ -178,6 +178,33 @@ export function openProjectSafe(name, trigger) {
         }
         firstHeading.appendChild(infoBtn);
       }
+
+      // FALLBACK: prepend info button to container if no heading was found
+      if (!projectContent.querySelector(".inline-info-btn")) {
+        const infoBtn = document.createElement("button");
+        infoBtn.className = "inline-info-btn";
+        infoBtn.textContent = "\u24D8 How to use";
+        infoBtn.setAttribute("aria-label", "How to use this project");
+        infoBtn.style.marginBottom = "12px";
+        infoBtn.style.background = "var(--accent, #a78bfa)";
+        infoBtn.style.border = "none";
+        infoBtn.style.borderRadius = "6px";
+        infoBtn.style.padding = "6px 14px";
+        infoBtn.style.cursor = "pointer";
+        infoBtn.style.color = "white";
+        infoBtn.style.fontSize = "0.85rem";
+        infoBtn.style.display = "block";
+
+        infoBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          if (typeof window.getProjectInstructions === "function") {
+            const info = window.getProjectInstructions(name);
+            showInfoModal(info.title, info.steps);
+          }
+        });
+
+        projectContent.insertBefore(infoBtn, projectContent.firstChild);
+      }
     }
   });
 
