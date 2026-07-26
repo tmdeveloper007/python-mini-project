@@ -351,16 +351,16 @@ def main():
                 ]
                 
                 if available_words:
-                    valid_words.append((category, available_words)
-                           
+                    valid_words.append((category, available_words))
+
             if not valid_words:
-                    used_words.clear()
-                    
-                    for category, words in WORD_BANK.items():
-                        available_words = words[tier]
-                        if available_words:
-                            valid_words.append((category, available_words))
-                            
+                used_words.clear()
+
+                for category, words in WORD_BANK.items():
+                    available_words = words[tier]
+                    if available_words:
+                        valid_words.append((category, available_words))
+
             category, words = random.choice(valid_words)
             word = random.choice(words)
 
